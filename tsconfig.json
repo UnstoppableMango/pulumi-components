@@ -1,0 +1,24 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"outDir": "bin",
+		"rootDir": ".",
+		"target": "es2020",
+		"module": "node16",
+		"moduleResolution": "node16",
+		"sourceMap": true,
+		"experimentalDecorators": true,
+		"pretty": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true,
+		"forceConsistentCasingInFileNames": true
+	},
+	"files": [
+		"components/index.ts",
+		"components/privateRepo.ts",
+		"components/publicRepo.ts",
+		"components/repo.ts",
+		"components/fork.ts",
+		"components/util.ts"
+	]
+}

@@ -27,13 +27,40 @@
         {
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
+              corepack
               gnumake
               nixfmt
+              nodejs_24
+              shellcheck
+              yarn
             ];
+
+            # Node.js bundled NSS certs lack GTS Root R4; registry.yarnpkg.com uses it
+            # https://github.com/yarnpkg/yarn/issues/6578
+            NODE_EXTRA_CA_CERTS = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+
+            COREPACK = pkgs.corepack + "/bin/corepack";
+            NIXFMT = pkgs.nixfmt + "/bin/nixfmt";
+            NODE = pkgs.nodejs_24 + "/bin/node";
+            YARN = pkgs.yarn + "/bin/yarn";
           };
 
-          treefmt.programs = {
-            nixfmt.enable = true;
+          treefmt = {
+            projectRootFile = "flake.nix";
+            programs.nixfmt.enable = true;
+            programs.prettier = {
+              enable = true;
+              includes = [
+                "*.ts"
+                "*.mjs"
+                "*.json"
+                "*.md"
+              ];
+              excludes = [
+                "*-lock.json"
+                "yarn.lock"
+              ];
+            };
           };
         };
     };
