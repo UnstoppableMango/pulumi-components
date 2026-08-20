@@ -14,6 +14,11 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    pulumi2nix = {
+      url = "github:UnstoppableMango/pulumi2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -25,6 +30,12 @@
       perSystem =
         { pkgs, ... }:
         {
+          # packages.components is blocked on pulumi2nix adding yarn.lock
+          # support to lib.sdkBuilders.nodejs (it's npm/package-lock.json only
+          # today): https://github.com/UnstoppableMango/pulumi2nix/issues/8
+          # Once that lands, build it there via
+          # `inputs.pulumi2nix.lib.sdkBuilders { inherit pkgs; } .nodejs`.
+
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
               corepack
