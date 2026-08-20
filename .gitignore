@@ -1,0 +1,6 @@
+/result*
+.envrc
+.direnv/
+bin/
+node_modules/
+.make/
