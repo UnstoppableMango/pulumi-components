@@ -29,12 +29,64 @@
 
       perSystem =
         { pkgs, ... }:
+        let
+          # `pulumi package get-schema` runs the component's own source to
+          # serve the GetSchema RPC, which resolves @pulumi/github at
+          # module load and tries to fetch its resource plugin over the
+          # network - not available inside the build sandbox. Pre-fetch it
+          # as a fixed-output derivation (network allowed there) and drop
+          # it into the plugin cache dir ourselves instead.
+          pulumiResourceGithubPlugin = pkgs.runCommand "pulumi-resource-github-6.15.0" { } ''
+            mkdir -p $out
+            tar -xzf ${
+              pkgs.fetchurl {
+                url = "https://get.pulumi.com/releases/plugins/pulumi-resource-github-v6.15.0-linux-amd64.tar.gz";
+                sha256 = "0zzfkgis3kda2yvx1asx9nz3dr5f708761pcl1kyapkwmcrrijaj";
+              }
+            } -C $out
+            chmod +x $out/pulumi-resource-github
+          '';
+        in
         {
-          # packages.components is blocked on pulumi2nix adding yarn.lock
-          # support to lib.sdkBuilders.nodejs (it's npm/package-lock.json only
-          # today): https://github.com/UnstoppableMango/pulumi2nix/issues/8
-          # Once that lands, build it there via
-          # `inputs.pulumi2nix.lib.sdkBuilders { inherit pkgs; } .nodejs`.
+          # Source-based, multi-language component provider built directly
+          # from components/*.ts via pulumi2nix's mkComponentPackage: no
+          # compiled binary, schema extracted from source with
+          # `pulumi package get-schema`. Schema extraction is still
+          # npm-internal (unlike lib.sdkBuilders.yarnNodejs, which added
+          # yarn classic support for SDK packaging), so
+          # nix/schema/package-lock.json is a nix-build-only lockfile fed
+          # to it, separate from this repo's real yarn.lock.
+          packages.provider = inputs.pulumi2nix.lib.mkComponentPackage { inherit pkgs; } {
+            pname = "pulumi-components";
+            version = (pkgs.lib.importJSON ./package.json).version;
+            src = ./.;
+            schema = {
+              languagePlugin = pkgs.pulumiPackages.pulumi-nodejs;
+              lockFile = ./nix/schema/package-lock.json;
+              npmDepsHash = "sha256-2jNcp02qgOV/d2jtbzVp5ycanGlp1YxSfNAQ7j2agDY=";
+              # mk-component-schema.nix's own postPatch copies lockFile in
+              # read-only (as it comes from the nix store); `pulumi package
+              # get-schema` runs `npm install` internally, which needs to
+              # rewrite package-lock.json and fails with EACCES otherwise.
+              # Its buildPhase also sets HOME=$TMPDIR before invoking
+              # get-schema, so pre-seeding the plugin cache there (already
+              # exported for the whole build, not just that phase) makes it
+              # visible when get-schema looks for pulumi-resource-github.
+              postPatch = ''
+                cp ${./nix/schema/package-lock.json} package-lock.json
+                chmod +w package-lock.json
+
+                mkdir -p $TMPDIR/.pulumi/plugins/resource-github-v6.15.0
+                cp ${pulumiResourceGithubPlugin}/pulumi-resource-github \
+                  $TMPDIR/.pulumi/plugins/resource-github-v6.15.0/pulumi-resource-github
+                chmod +x $TMPDIR/.pulumi/plugins/resource-github-v6.15.0/pulumi-resource-github
+              '';
+            };
+            meta = {
+              description = "Reusable Pulumi component resources";
+              license = pkgs.lib.licenses.mit;
+            };
+          };
 
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
