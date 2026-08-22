@@ -1,10 +1,10 @@
 import * as gh from "@pulumi/github";
-import {
+import type {
 	RepositoryRulesetRules,
 	RepositoryRulesetRulesRequiredStatusChecks,
 	RepositoryTemplate,
 } from "@pulumi/github/types/input";
-import { ComponentResourceOptions, Input } from "@pulumi/pulumi";
+import type { ComponentResourceOptions, Input } from "@pulumi/pulumi";
 import { Repo } from "./repo";
 
 export interface PublicRepoArgs {

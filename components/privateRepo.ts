@@ -1,4 +1,4 @@
-import { ComponentResourceOptions, Input } from "@pulumi/pulumi";
+import type { ComponentResourceOptions, Input } from "@pulumi/pulumi";
 import { Repo } from "./repo";
 
 export interface PrivateRepoArgs {

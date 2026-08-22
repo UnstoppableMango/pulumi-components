@@ -1,5 +1,6 @@
 import * as gh from "@pulumi/github";
-import { ComponentResource, ComponentResourceOptions } from "@pulumi/pulumi";
+import { ComponentResource } from "@pulumi/pulumi";
+import type { ComponentResourceOptions } from "@pulumi/pulumi";
 
 export interface RepoArgs {
 	overrides: Partial<gh.RepositoryArgs>;
