@@ -67,11 +67,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1787189466,
-        "narHash": "sha256-+nWGJe8B1Kwlj2jiFgpioT4lDa4QbcMFfTbWw+SpeyM=",
+        "lastModified": 1787510347,
+        "narHash": "sha256-xLCTr6mldWWYu64tjv/07fec/k12L4oZppRkoB6tEoE=",
         "owner": "UnstoppableMango",
         "repo": "pulumi2nix",
-        "rev": "ebd889f6dd74f924a8f0bcbbc9cc08e0496f55fa",
+        "rev": "662e5b9e86e5325d2322c160d0aa84ac84712971",
         "type": "github"
       },
       "original": {
@@ -80,11 +80,44 @@
         "type": "github"
       }
     },
+    "pulumipkgs": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pulumi2nix": [
+          "pulumi2nix"
+        ],
+        "systems": [
+          "systems"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787449815,
+        "narHash": "sha256-iAjeu4UgdmIooAYlpSz/ra4HvkBzp1a6+2lnUZiS//M=",
+        "owner": "unmango",
+        "repo": "pulumipkgs",
+        "rev": "68b2aae2c4c910c2378363560dd8a312e4f250c2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "unmango",
+        "repo": "pulumipkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs",
         "pulumi2nix": "pulumi2nix",
+        "pulumipkgs": "pulumipkgs",
         "systems": "systems_2",
         "treefmt-nix": "treefmt-nix_2"
       }

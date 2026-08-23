@@ -1,21 +1,35 @@
 import * as gh from "@pulumi/github";
 import type {
-	RepositoryRulesetRules,
+	RepositoryPagesSource,
 	RepositoryRulesetRulesRequiredStatusChecks,
+	RepositoryRulesetRulesRequiredStatusChecksRequiredCheck,
 	RepositoryTemplate,
 } from "@pulumi/github/types/input";
+import { ComponentResource } from "@pulumi/pulumi";
 import type { ComponentResourceOptions, Input } from "@pulumi/pulumi";
-import { Repo } from "./repo";
+import { createRepo } from "./repo";
+
+export interface PublicRepoPagesArgs {
+	buildType?: Input<string>;
+	cname?: Input<string>;
+	httpsEnforced?: Input<boolean>;
+	public?: Input<boolean>;
+	source?: RepositoryPagesSource;
+}
 
 export interface PublicRepoArgs {
 	description: Input<string>;
-	pages?: Omit<gh.RepositoryPagesArgs, "repository">;
-	requiredChecks?: RepositoryRulesetRulesRequiredStatusChecks["requiredChecks"];
+	pages?: PublicRepoPagesArgs;
+	requiredChecks?: Input<
+		Input<RepositoryRulesetRulesRequiredStatusChecksRequiredCheck>[]
+	>;
 	template?: RepositoryTemplate;
 	topics?: Input<Input<string>[]>;
 }
 
-export class PublicRepo extends Repo {
+export class PublicRepo extends ComponentResource {
+	public readonly repo!: gh.Repository;
+	public readonly vulnerabilityAlerts?: gh.RepositoryVulnerabilityAlerts;
 	public readonly mainRuleset!: gh.RepositoryRuleset;
 	public readonly pages?: gh.RepositoryPages;
 
@@ -24,27 +38,23 @@ export class PublicRepo extends Repo {
 		args: PublicRepoArgs,
 		opts?: ComponentResourceOptions,
 	) {
-		super(
-			"unmango:github:PublicRepo",
-			name,
-			{
-				overrides: {
-					name,
-					description: args.description,
-					visibility: "public",
-					allowAutoMerge: true,
-					licenseTemplate: "mit",
-					template: args.template,
-					topics: args.topics,
-				},
-			},
-			opts,
-		);
-
+		super("unmango:github:PublicRepo", name, args, opts);
 		if (opts?.urn) return; // Refreshing
 
-		const repo = this.repo;
-		const vulnerabilityAlerts = this.vulnerabilityAlerts;
+		const { repo, vulnerabilityAlerts } = createRepo(this, name, {
+			overrides: {
+				name,
+				description: args.description,
+				visibility: "public",
+				allowAutoMerge: true,
+				licenseTemplate: "mit",
+				template: args.template,
+				topics: args.topics,
+			},
+		});
+
+		this.repo = repo;
+		this.vulnerabilityAlerts = vulnerabilityAlerts;
 
 		const mainRuleset = new gh.RepositoryRuleset(
 			name,
@@ -98,7 +108,7 @@ export class PublicRepo extends Repo {
 
 function getRequiredStatusChecks(
 	checks: PublicRepoArgs["requiredChecks"],
-): RepositoryRulesetRules["requiredStatusChecks"] {
+): RepositoryRulesetRulesRequiredStatusChecks | undefined {
 	if (!checks) return;
 	return { requiredChecks: checks };
 }
