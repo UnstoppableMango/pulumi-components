@@ -80,11 +80,44 @@
         "type": "github"
       }
     },
+    "pulumipkgs": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pulumi2nix": [
+          "pulumi2nix"
+        ],
+        "systems": [
+          "systems"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787449815,
+        "narHash": "sha256-iAjeu4UgdmIooAYlpSz/ra4HvkBzp1a6+2lnUZiS//M=",
+        "owner": "unmango",
+        "repo": "pulumipkgs",
+        "rev": "68b2aae2c4c910c2378363560dd8a312e4f250c2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "unmango",
+        "repo": "pulumipkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs",
         "pulumi2nix": "pulumi2nix",
+        "pulumipkgs": "pulumipkgs",
         "systems": "systems_2",
         "treefmt-nix": "treefmt-nix_2"
       }
