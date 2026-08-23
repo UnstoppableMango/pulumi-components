@@ -11,15 +11,20 @@ NIX_SRC != find . -name '*.nix'
 
 .PHONY: lint format install
 
+build:
+	$(NIX) build .#
+
+check:
+	$(NIX) flake check
+
 install: .make/yarn_install
 
 lint: install
 	$(YARN) eslint .
 
 format fmt: .make/nix_fmt
-update: flake.lock
 
-flake.lock: flake.nix
+update:
 	$(NIX) flake update
 
 .make/yarn_install: yarn.lock
