@@ -15,10 +15,14 @@
 	},
 	"files": [
 		"components/index.ts",
-		"components/privateRepo.ts",
-		"components/publicRepo.ts",
-		"components/repo.ts",
-		"components/fork.ts",
+		"components/github/privateRepo.ts",
+		"components/github/publicRepo.ts",
+		"components/github/repo.ts",
+		"components/github/fork.ts",
+		"components/gitlab/privateRepo.ts",
+		"components/gitlab/publicRepo.ts",
+		"components/gitlab/repo.ts",
+		"components/gitlab/fork.ts",
 		"components/util.ts"
 	]
 }
