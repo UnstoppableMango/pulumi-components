@@ -70,21 +70,26 @@
             schemaArgs = {
               languagePlugin = pkgs.pulumiPackages.pulumi-nodejs;
               lockFile = ./nix/schema/package-lock.json;
-              npmDepsHash = "sha256-2jNcp02qgOV/d2jtbzVp5ycanGlp1YxSfNAQ7j2agDY=";
+              npmDepsHash = "sha256-pgbH7wGmcfjW5BGJVT1e3+SCEeeoIpSzpmXKDNgvTyU=";
               # `pulumi package get-schema` runs the component's own source
-              # to serve the GetSchema RPC, which resolves @pulumi/github at
-              # module load and tries to fetch its resource plugin over the
-              # network - not available inside the build sandbox.
-              # providerPlugins seeds the plugin cache before get-schema runs
-              # by copying `plugin`'s contents into
-              # ~/.pulumi/plugins/resource-github-v<version>/, where pulumi
-              # looks for `pulumi-resource-github` at the directory root -
+              # to serve the GetSchema RPC, which resolves @pulumi/github and
+              # @pulumi/gitlab at module load and tries to fetch their
+              # resource plugins over the network - not available inside the
+              # build sandbox. providerPlugins seeds the plugin cache before
+              # get-schema runs by copying each `plugin`'s contents into
+              # ~/.pulumi/plugins/resource-<name>-v<version>/, where pulumi
+              # looks for `pulumi-resource-<name>` at the directory root -
               # hence `/bin` rather than the derivation root.
               providerPlugins = [
                 {
                   name = "github";
                   version = "6.15.0";
                   plugin = "${pkgs.pulumiPackages.github}/bin";
+                }
+                {
+                  name = "gitlab";
+                  version = "10.1.1";
+                  plugin = "${pkgs.pulumiPackages.gitlab}/bin";
                 }
               ];
             };
