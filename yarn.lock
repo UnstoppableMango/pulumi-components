@@ -539,6 +539,13 @@
   dependencies:
     "@pulumi/pulumi" "^3.142.0"
 
+"@pulumi/gitlab@^10.1.1":
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/@pulumi/gitlab/-/gitlab-10.1.1.tgz#f84516cbc63e582e2c2913c92d8b98755e96ae5f"
+  integrity sha512-tqODQ97lRNqTksBd9P3DsYFOSWzBKHayl4vtsXor/qT2bU01D1raX889KVw0sOnfBCI3+PIpgjT2gsQmWoEAeA==
+  dependencies:
+    "@pulumi/pulumi" "^3.142.0"
+
 "@pulumi/pulumi@^3.142.0", "@pulumi/pulumi@^3.244.0":
   version "3.258.0"
   resolved "https://registry.yarnpkg.com/@pulumi/pulumi/-/pulumi-3.258.0.tgz#ed5788365ebcf50df013d216463111908b0086ef"
