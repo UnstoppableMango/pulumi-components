@@ -1,7 +1,7 @@
 import * as gitlab from "@pulumi/gitlab";
 import { ComponentResource } from "@pulumi/pulumi";
 import type { ComponentResourceOptions, Input } from "@pulumi/pulumi";
-import { createGitlabRepo } from "./gitlabRepo";
+import { createRepo } from "./repo";
 
 export interface GitlabPublicRepoTemplateArgs {
 	projectId: Input<number>;
@@ -27,7 +27,7 @@ export class GitlabPublicRepo extends ComponentResource {
 		super("unmango:gitlab:PublicRepo", name, args, opts);
 		if (opts?.urn) return; // Refreshing
 
-		const { repo } = createGitlabRepo(this, name, {
+		const { repo } = createRepo(this, name, {
 			overrides: {
 				name,
 				description: args.description,

@@ -1,7 +1,7 @@
 import * as gitlab from "@pulumi/gitlab";
 import { ComponentResource } from "@pulumi/pulumi";
 import type { ComponentResourceOptions, Input } from "@pulumi/pulumi";
-import { createGitlabRepo } from "./gitlabRepo";
+import { createRepo } from "./repo";
 
 export interface GitlabForkArgs {
 	sourceUrl: Input<string>;
@@ -22,7 +22,7 @@ export class GitlabFork extends ComponentResource {
 		super("unmango:gitlab:Fork", name, args, opts);
 		if (opts?.urn) return; // Refreshing
 
-		const { repo } = createGitlabRepo(this, name, {
+		const { repo } = createRepo(this, name, {
 			overrides: {
 				name,
 				importUrl: args.sourceUrl,

@@ -1,23 +1,23 @@
 import * as gitlab from "@pulumi/gitlab";
 import { ComponentResource } from "@pulumi/pulumi";
 
-export interface GitlabRepoArgs {
+export interface RepoArgs {
 	overrides: Partial<gitlab.ProjectArgs>;
 }
 
-export interface GitlabRepoResult {
+export interface RepoResult {
 	repo: gitlab.Project;
 }
 
-// Shared by GitlabFork/GitlabPublicRepo/GitlabPrivateRepo, each of which must
-// extend ComponentResource directly (not an intermediate base class) so
+// Shared by Fork/PublicRepo/PrivateRepo, each of which must extend
+// ComponentResource directly (not an intermediate base class) so
 // `pulumi package get-schema`'s analyzer can discover them - see
 // https://github.com/UnstoppableMango/pulumi2nix/issues/8.
-export function createGitlabRepo(
+export function createRepo(
 	parent: ComponentResource,
 	name: string,
-	args: GitlabRepoArgs,
-): GitlabRepoResult {
+	args: RepoArgs,
+): RepoResult {
 	const repo = new gitlab.Project(
 		name,
 		{
