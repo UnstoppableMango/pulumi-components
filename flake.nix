@@ -135,6 +135,7 @@
               excludes = [
                 "*-lock.json"
                 "yarn.lock"
+                "CHANGELOG.md"
               ];
             };
           };
