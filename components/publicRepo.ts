@@ -18,6 +18,7 @@ export interface PublicRepoPagesArgs {
 }
 
 export interface PublicRepoArgs {
+	archived?: Input<boolean>;
 	description: Input<string>;
 	pages?: PublicRepoPagesArgs;
 	requiredChecks?: Input<
@@ -50,6 +51,7 @@ export class PublicRepo extends ComponentResource {
 				licenseTemplate: "mit",
 				template: args.template,
 				topics: args.topics,
+				archived: args.archived,
 			},
 		});
 
