@@ -76,21 +76,12 @@
               # @pulumi/gitlab at module load and tries to fetch their
               # resource plugins over the network - not available inside the
               # build sandbox. providerPlugins seeds the plugin cache before
-              # get-schema runs by copying each `plugin`'s contents into
-              # ~/.pulumi/plugins/resource-<name>-v<version>/, where pulumi
-              # looks for `pulumi-resource-<name>` at the directory root -
-              # hence `/bin` rather than the derivation root.
+              # get-schema runs; passing the packages directly lets pulumi2nix
+              # read each plugin's name/version off itself (meta.mainProgram,
+              # version) instead of restating them here.
               providerPlugins = [
-                {
-                  name = "github";
-                  version = "6.15.0";
-                  plugin = "${pkgs.pulumiPackages.github}/bin";
-                }
-                {
-                  name = "gitlab";
-                  version = "10.1.1";
-                  plugin = "${pkgs.pulumiPackages.gitlab}/bin";
-                }
+                pkgs.pulumiPackages.github
+                pkgs.pulumiPackages.gitlab
               ];
             };
             meta = {
