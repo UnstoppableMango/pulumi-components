@@ -1,9 +1,17 @@
 import * as gh from "@pulumi/github";
 import { ComponentResource } from "@pulumi/pulumi";
+import type { CustomResourceOptions } from "@pulumi/pulumi";
 
 export interface RepoArgs {
 	overrides: Partial<gh.RepositoryArgs>;
 	enableVulnerabilityAlerts?: boolean;
+
+	// repoOptions are passed to the repository resource itself, on top of
+	// its parent. It is how a caller adopts a repository that already
+	// exists outside a component: moving one under a component changes its
+	// URN, which reads as delete-and-create without an alias saying
+	// otherwise.
+	repoOptions?: CustomResourceOptions;
 }
 
 export interface RepoResult {
@@ -37,7 +45,7 @@ export function createRepo(
 			squashMergeCommitTitle: "COMMIT_OR_PR_TITLE",
 			...args.overrides,
 		},
-		{ parent },
+		{ parent, ...args.repoOptions },
 	);
 
 	let vulnerabilityAlerts: gh.RepositoryVulnerabilityAlerts | undefined;
