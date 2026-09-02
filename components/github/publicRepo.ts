@@ -7,12 +7,17 @@ import type {
 	RepositoryTemplate,
 } from "@pulumi/github/types/input";
 import { ComponentResource } from "@pulumi/pulumi";
-import type {
-	ComponentResourceOptions,
-	CustomResourceOptions,
-	Input,
-} from "@pulumi/pulumi";
+import type { ComponentResourceOptions, Input } from "@pulumi/pulumi";
 import { createRepo } from "./repo";
+
+// A narrow slice of CustomResourceOptions. The component schema analyzer
+// cannot represent the full type, whose `aliases` is a union of a URN and an
+// alias object, so adoption exposes only the two fields it needs and takes
+// aliases as URNs.
+export interface AdoptionOptions {
+	import?: string;
+	aliases?: string[];
+}
 
 export interface PublicRepoPagesArgs {
 	buildType?: Input<string>;
@@ -47,8 +52,8 @@ export interface PublicRepoArgs {
 	// exist for adopting a repository or a ruleset that already exists:
 	// an alias for one whose URN is moving under this component, or an
 	// import for a ruleset created outside Pulumi.
-	repoOptions?: CustomResourceOptions;
-	rulesetOptions?: CustomResourceOptions;
+	repoOptions?: AdoptionOptions;
+	rulesetOptions?: AdoptionOptions;
 }
 
 export class PublicRepo extends ComponentResource {
