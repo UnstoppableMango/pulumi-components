@@ -1,6 +1,7 @@
 import * as gh from "@pulumi/github";
 import type {
 	RepositoryPagesSource,
+	RepositoryRulesetRules,
 	RepositoryRulesetRulesRequiredStatusChecks,
 	RepositoryRulesetRulesRequiredStatusChecksRequiredCheck,
 	RepositoryTemplate,
@@ -8,6 +9,15 @@ import type {
 import { ComponentResource } from "@pulumi/pulumi";
 import type { ComponentResourceOptions, Input } from "@pulumi/pulumi";
 import { createRepo } from "./repo";
+
+// A narrow slice of CustomResourceOptions. The component schema analyzer
+// cannot represent the full type, whose `aliases` is a union of a URN and an
+// alias object, so adoption exposes only the two fields it needs and takes
+// aliases as URNs.
+export interface AdoptionOptions {
+	import?: string;
+	aliases?: string[];
+}
 
 export interface PublicRepoPagesArgs {
 	buildType?: Input<string>;
@@ -26,6 +36,24 @@ export interface PublicRepoArgs {
 	>;
 	template?: RepositoryTemplate;
 	topics?: Input<Input<string>[]>;
+
+	// overrides are merged over the repository settings this component
+	// chooses, for a repository that needs something the component does not
+	// model. Setting a field to undefined unsets it, which is how a
+	// repository that is not MIT licensed drops the license template.
+	overrides?: Partial<gh.RepositoryArgs>;
+
+	// rules are merged over the rules of the main ruleset. A key given here
+	// replaces that rule outright rather than merging into it, so overriding
+	// pullRequest means restating all of it.
+	rules?: Partial<RepositoryRulesetRules>;
+
+	// repoOptions and rulesetOptions reach the underlying resources. They
+	// exist for adopting a repository or a ruleset that already exists:
+	// an alias for one whose URN is moving under this component, or an
+	// import for a ruleset created outside Pulumi.
+	repoOptions?: AdoptionOptions;
+	rulesetOptions?: AdoptionOptions;
 }
 
 export class PublicRepo extends ComponentResource {
@@ -52,7 +80,9 @@ export class PublicRepo extends ComponentResource {
 				template: args.template,
 				topics: args.topics,
 				archived: args.archived,
+				...args.overrides,
 			},
+			repoOptions: args.repoOptions,
 		});
 
 		this.repo = repo;
@@ -81,9 +111,10 @@ export class PublicRepo extends ComponentResource {
 					requiredLinearHistory: true,
 					requiredSignatures: true,
 					requiredStatusChecks: getRequiredStatusChecks(args.requiredChecks),
+					...args.rules,
 				},
 			},
-			{ parent: this },
+			{ parent: this, ...args.rulesetOptions },
 		);
 
 		this.mainRuleset = mainRuleset;
