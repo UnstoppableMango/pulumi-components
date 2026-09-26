@@ -109,7 +109,6 @@ export class PublicRepo extends ComponentResource {
 					},
 					nonFastForward: true,
 					requiredLinearHistory: true,
-					requiredSignatures: true,
 					requiredStatusChecks: getRequiredStatusChecks(args.requiredChecks),
 					...args.rules,
 				},
