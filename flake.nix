@@ -34,10 +34,10 @@
     inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
-      imports = [
-        inputs.systems.flakeModule
-        inputs.treefmt-nix.flakeModule
-        inputs.pulumi2nix.flakeModules.default
+      imports = with inputs; [
+        systems.flakeModule or { }
+        treefmt-nix.flakeModule
+        pulumi2nix.flakeModules.default
       ];
 
       perSystem =
