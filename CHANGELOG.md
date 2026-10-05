@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/UnstoppableMango/pulumi-components/compare/v0.1.1...v0.1.2) (2026-09-28)
+
+
+### Bug Fixes
+
+* **renovate:** reference release-please preset by name ([#32](https://github.com/UnstoppableMango/pulumi-components/issues/32)) ([2fcf732](https://github.com/UnstoppableMango/pulumi-components/commit/2fcf73287eb757012a574ca0cbb4092a25feda8c)), closes [#31](https://github.com/UnstoppableMango/pulumi-components/issues/31)
+
 ## [0.1.1](https://github.com/UnstoppableMango/pulumi-components/compare/v0.1.0...v0.1.1) (2026-09-26)
 
 
