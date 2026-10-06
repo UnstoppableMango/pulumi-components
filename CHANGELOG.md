@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/UnstoppableMango/pulumi-components/compare/v0.1.2...v0.1.3) (2026-10-06)
+
+
+### Features
+
+* **github:** disable CodeRabbit auto reviews on private repos ([#43](https://github.com/UnstoppableMango/pulumi-components/issues/43)) ([7976ea8](https://github.com/UnstoppableMango/pulumi-components/commit/7976ea8579bcc3e529770bda7ec37a33aaba7db7))
+
 ## [0.1.2](https://github.com/UnstoppableMango/pulumi-components/compare/v0.1.1...v0.1.2) (2026-09-28)
 
 
