@@ -32,12 +32,6 @@ export interface PublicRepoArgs {
 	archived?: Input<boolean>;
 	description: Input<string>;
 	pages?: PublicRepoPagesArgs;
-
-	// requiredChecks are the status checks the main ruleset requires. When
-	// omitted, the ruleset requires one check named `required`: a gate job at
-	// the end of the repository's CI that fails when any job it needs did, so
-	// the repository decides what blocks a merge by editing that job's needs.
-	// An empty list requires nothing.
 	requiredChecks?: Input<
 		Input<RepositoryRulesetRulesRequiredStatusChecksRequiredCheck>[]
 	>;
@@ -145,7 +139,6 @@ export class PublicRepo extends ComponentResource {
 	}
 }
 
-// The check every repository's CI ends in unless it says otherwise.
 export const defaultRequiredChecks = [
 	{ context: "required", integrationId: integrationIds.github },
 ];
@@ -153,8 +146,6 @@ export const defaultRequiredChecks = [
 function getRequiredStatusChecks(
 	checks: PublicRepoArgs["requiredChecks"] = defaultRequiredChecks,
 ): Output<RepositoryRulesetRulesRequiredStatusChecks | undefined> {
-	// An empty list means no checks are required, which is the absence of
-	// the rule rather than a rule listing nothing.
 	return output(checks).apply((c) =>
 		c.length > 0 ? { requiredChecks: c } : undefined,
 	);
