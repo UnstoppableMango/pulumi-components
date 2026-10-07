@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.0](https://github.com/UnstoppableMango/pulumi-components/compare/v0.1.3...v0.2.0) (2026-10-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* **github:** callers that omitted requiredChecks to require nothing must now pass requiredChecks: [].
+
+### Features
+
+* **github:** require a `required` gate check by default ([#45](https://github.com/UnstoppableMango/pulumi-components/issues/45)) ([bf988df](https://github.com/UnstoppableMango/pulumi-components/commit/bf988dfbc7ddca935ca7f050f4cbcc491319ed75))
+
 ## [0.1.3](https://github.com/UnstoppableMango/pulumi-components/compare/v0.1.2...v0.1.3) (2026-10-06)
 
 
