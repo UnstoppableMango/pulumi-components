@@ -6,8 +6,9 @@ import type {
 	RepositoryRulesetRulesRequiredStatusChecksRequiredCheck,
 	RepositoryTemplate,
 } from "@pulumi/github/types/input";
-import { ComponentResource } from "@pulumi/pulumi";
-import type { ComponentResourceOptions, Input } from "@pulumi/pulumi";
+import { ComponentResource, output } from "@pulumi/pulumi";
+import type { ComponentResourceOptions, Input, Output } from "@pulumi/pulumi";
+import { integrationIds } from "../util";
 import { createRepo } from "./repo";
 
 // A narrow slice of CustomResourceOptions. The component schema analyzer
@@ -31,6 +32,12 @@ export interface PublicRepoArgs {
 	archived?: Input<boolean>;
 	description: Input<string>;
 	pages?: PublicRepoPagesArgs;
+
+	// requiredChecks are the status checks the main ruleset requires. When
+	// omitted, the ruleset requires one check named `required`: a gate job at
+	// the end of the repository's CI that fails when any job it needs did, so
+	// the repository decides what blocks a merge by editing that job's needs.
+	// An empty list requires nothing.
 	requiredChecks?: Input<
 		Input<RepositoryRulesetRulesRequiredStatusChecksRequiredCheck>[]
 	>;
@@ -138,9 +145,17 @@ export class PublicRepo extends ComponentResource {
 	}
 }
 
+// The check every repository's CI ends in unless it says otherwise.
+export const defaultRequiredChecks = [
+	{ context: "required", integrationId: integrationIds.github },
+];
+
 function getRequiredStatusChecks(
-	checks: PublicRepoArgs["requiredChecks"],
-): RepositoryRulesetRulesRequiredStatusChecks | undefined {
-	if (!checks) return;
-	return { requiredChecks: checks };
+	checks: PublicRepoArgs["requiredChecks"] = defaultRequiredChecks,
+): Output<RepositoryRulesetRulesRequiredStatusChecks | undefined> {
+	// An empty list means no checks are required, which is the absence of
+	// the rule rather than a rule listing nothing.
+	return output(checks).apply((c) =>
+		c.length > 0 ? { requiredChecks: c } : undefined,
+	);
 }
