@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/UnstoppableMango/pulumi-components/compare/v0.2.0...v0.2.1) (2026-11-22)
+
+
+### Features
+
+* **github:** give PublicRepo's main ruleset an admin bypass and a gateOnly option ([#55](https://github.com/UnstoppableMango/pulumi-components/issues/55)) ([151f53a](https://github.com/UnstoppableMango/pulumi-components/commit/151f53a95d28680cb4390a8c23119ba410cc51fb))
+
 ## [0.2.0](https://github.com/UnstoppableMango/pulumi-components/compare/v0.1.3...v0.2.0) (2026-10-07)
 
 
