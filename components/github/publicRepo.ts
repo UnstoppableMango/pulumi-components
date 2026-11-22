@@ -37,9 +37,7 @@ export interface PublicRepoArgs {
 		Input<RepositoryRulesetRulesRequiredStatusChecksRequiredCheck>[]
 	>;
 
-	// gateOnly requires the `required` gate job alone, whatever
-	// requiredChecks says, so a repository can move to the gate without its
-	// list being edited first.
+	// Overrides requiredChecks.
 	gateOnly?: boolean;
 	template?: RepositoryTemplate;
 	topics?: Input<Input<string>[]>;
@@ -148,9 +146,7 @@ export class PublicRepo extends ComponentResource {
 	}
 }
 
-// Repository admins (role 5) may merge a pull request past the rules, the way
-// through an outage of a required check. pull_request mode keeps them to a
-// pull request, so they cannot push to the branch directly.
+// Role 5 is the repository admin role.
 export const defaultBypassActors: RepositoryRulesetBypassActor[] = [
 	{
 		actorType: "RepositoryRole",
