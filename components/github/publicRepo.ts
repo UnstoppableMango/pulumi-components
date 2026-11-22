@@ -1,6 +1,7 @@
 import * as gh from "@pulumi/github";
 import type {
 	RepositoryPagesSource,
+	RepositoryRulesetBypassActor,
 	RepositoryRulesetRules,
 	RepositoryRulesetRulesRequiredStatusChecks,
 	RepositoryRulesetRulesRequiredStatusChecksRequiredCheck,
@@ -35,6 +36,11 @@ export interface PublicRepoArgs {
 	requiredChecks?: Input<
 		Input<RepositoryRulesetRulesRequiredStatusChecksRequiredCheck>[]
 	>;
+
+	// gateOnly requires the `required` gate job alone, whatever
+	// requiredChecks says, so a repository can move to the gate without its
+	// list being edited first.
+	gateOnly?: boolean;
 	template?: RepositoryTemplate;
 	topics?: Input<Input<string>[]>;
 
@@ -96,6 +102,7 @@ export class PublicRepo extends ComponentResource {
 				repository: repo.name,
 				enforcement: "active",
 				target: "branch",
+				bypassActors: defaultBypassActors,
 				conditions: {
 					refName: {
 						includes: ["~DEFAULT_BRANCH"],
@@ -110,7 +117,9 @@ export class PublicRepo extends ComponentResource {
 					},
 					nonFastForward: true,
 					requiredLinearHistory: true,
-					requiredStatusChecks: getRequiredStatusChecks(args.requiredChecks),
+					requiredStatusChecks: getRequiredStatusChecks(
+						args.gateOnly ? defaultRequiredChecks : args.requiredChecks,
+					),
 					...args.rules,
 				},
 			},
@@ -138,6 +147,17 @@ export class PublicRepo extends ComponentResource {
 		});
 	}
 }
+
+// Repository admins (role 5) may merge a pull request past the rules, the way
+// through an outage of a required check. pull_request mode keeps them to a
+// pull request, so they cannot push to the branch directly.
+export const defaultBypassActors: RepositoryRulesetBypassActor[] = [
+	{
+		actorType: "RepositoryRole",
+		actorId: 5,
+		bypassMode: "pull_request",
+	},
+];
 
 export const defaultRequiredChecks = [
 	{ context: "required", integrationId: integrationIds.github },
